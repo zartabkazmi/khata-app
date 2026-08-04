@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  /* -------- Ledger palette -------- */
+  --color-ink: #14171f;
+  --color-ink-soft: #2a2f3a;
+  --color-paper: #f7f5f0;
+  --color-paper-dim: #efece4;
+  --color-brass: #b08d57;
+  --color-brass-light: #d9c39a;
+  --color-forest: #2f5233;
+  --color-forest-light: #e7efe8;
+  --color-rust: #a6432f;
+  --color-rust-light: #f5e6e2;
+  --color-slate: #6b7280;
+  --color-slate-light: #9aa1ab;
+  --color-line: #ded8c9;
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Perforated / torn receipt edge, used as a signature motif */
+.perf-edge {
+  background-image: radial-gradient(circle, var(--color-paper) 4.5px, transparent 4.6px);
+  background-size: 16px 16px;
+  background-position: 0 -8px;
+  height: 10px;
+}
+
+.perf-edge-dim {
+  background-image: radial-gradient(circle, var(--color-paper) 4.5px, transparent 4.6px);
+  background-size: 16px 16px;
+  background-position: 0 -8px;
+  height: 10px;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes tally-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-tally-in { animation: tally-in 0.35s ease-out both; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fade-in 0.2s ease-out both; }

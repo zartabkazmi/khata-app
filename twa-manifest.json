@@ -1,0 +1,43 @@
+{
+  "packageId": "com.khata.expenses",
+  "host": "SyedaZartabKazmi.github.io",
+  "name": "Khata",
+  "launcherName": "Khata",
+  "display": "standalone",
+  "themeColor": "#14171f",
+  "themeColorDark": "#14171f",
+  "navigationColor": "#14171f",
+  "navigationColorDark": "#14171f",
+  "navigationDividerColor": "#14171f",
+  "navigationDividerColorDark": "#14171f",
+  "backgroundColor": "#f7f5f0",
+  "enableNotifications": false,
+  "startUrl": "/khata-app/",
+  "iconUrl": "https://SyedaZartabKazmi.github.io/khata-app/icons/icon-512.png",
+  "maskableIconUrl": "https://SyedaZartabKazmi.github.io/khata-app/icons/icon-512-maskable.png",
+  "monochromeIconUrl": "",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "khata"
+  },
+  "appVersionCode": 1,
+  "appVersion": "1.0.0",
+  "shortcuts": [],
+  "generatorApp": "manual",
+  "webManifestUrl": "https://SyedaZartabKazmi.github.io/khata-app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://SyedaZartabKazmi.github.io/khata-app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": []
+}

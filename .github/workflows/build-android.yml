@@ -1,0 +1,47 @@
+name: Build Android APK & AAB
+
+# Run manually from the Actions tab whenever you want a fresh build.
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Point Bubblewrap at the runner's pre-installed JDK & Android SDK
+        run: |
+          bubblewrap updateConfig \
+            --jdkPath="$JAVA_HOME_17_X64" \
+            --androidSdkPath="$ANDROID_HOME"
+
+      - name: Restore signing keystore from secret
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore
+
+      - name: Build signed APK + AAB
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.BUBBLEWRAP_KEY_PASSWORD }}
+        # `yes ''` auto-accepts Bubblewrap's "regenerate project from manifest?" prompt
+        # (its default answer is already yes — this just skips the interactive wait).
+        run: yes '' | bubblewrap build --skipPwaValidation --manifest=./twa-manifest.json
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tally-app-release.apk
+          path: app-release-signed.apk
+
+      - name: Upload AAB (for Play Store upload)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tally-app-release.aab
+          path: app-release-bundle.aab

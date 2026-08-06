@@ -14,13 +14,21 @@ jobs:
         with:
           node-version: 20
 
+      # Installs a known-good JDK 17 and sets JAVA_HOME reliably, instead of
+      # relying on runner-image env vars (JAVA_HOME_17_X64 etc.) that can
+      # differ between GitHub's Ubuntu images.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
-      - name: Point Bubblewrap at the runner's pre-installed JDK & Android SDK
+      - name: Point Bubblewrap at the JDK & Android SDK (non-interactive)
         run: |
-          bubblewrap updateConfig \
-            --jdkPath="$JAVA_HOME_17_X64" \
+          echo "n" | bubblewrap updateConfig \
+            --jdkPath="$JAVA_HOME" \
             --androidSdkPath="$ANDROID_HOME"
 
       - name: Restore signing keystore from secret
@@ -37,11 +45,11 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: tally-app-release.apk
+          name: khata-app-release.apk
           path: app-release-signed.apk
 
       - name: Upload AAB (for Play Store upload)
         uses: actions/upload-artifact@v4
         with:
-          name: tally-app-release.aab
+          name: khata-app-release.aab
           path: app-release-bundle.aab

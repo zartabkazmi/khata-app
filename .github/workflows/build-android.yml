@@ -26,8 +26,13 @@ jobs:
         run: npm install -g @bubblewrap/cli
 
       - name: Point Bubblewrap at the JDK & Android SDK (non-interactive)
+        # Writing Bubblewrap's own config file directly, instead of running
+        # `bubblewrap updateConfig` interactively — its prompts don't behave
+        # reliably when piped input in a non-TTY CI shell.
         run: |
-          printf 'n\n%s\nn\n%s\n' "$JAVA_HOME" "$ANDROID_HOME" | bubblewrap updateConfig
+          mkdir -p "$HOME/.bubblewrap"
+          printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > "$HOME/.bubblewrap/config.json"
+          cat "$HOME/.bubblewrap/config.json"
 
       - name: Restore signing keystore from secret
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore

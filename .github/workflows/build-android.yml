@@ -27,9 +27,7 @@ jobs:
 
       - name: Point Bubblewrap at the JDK & Android SDK (non-interactive)
         run: |
-          echo "n" | bubblewrap updateConfig \
-            --jdkPath="$JAVA_HOME" \
-            --androidSdkPath="$ANDROID_HOME"
+          printf 'n\n%s\nn\n%s\n' "$JAVA_HOME" "$ANDROID_HOME" | bubblewrap updateConfig
 
       - name: Restore signing keystore from secret
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore

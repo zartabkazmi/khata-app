@@ -55,13 +55,20 @@ jobs:
       - name: Restore signing keystore from secret
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore
 
+      - name: Generate the Android project from twa-manifest.json
+        # Runs the project-generation step on its own first, with
+        # --skipVersionUpgrade so it uses the version already in
+        # twa-manifest.json instead of interactively asking for a new one
+        # (which has no usable default and would hang forever in CI).
+        # This also writes manifest-checksum.txt, so the next step (build)
+        # sees an up-to-date checksum and skips its own "update?" prompt too.
+        run: bubblewrap update --skipVersionUpgrade --manifest=./twa-manifest.json
+
       - name: Build signed APK + AAB
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.BUBBLEWRAP_KEY_PASSWORD }}
-        # `yes ''` auto-accepts Bubblewrap's "regenerate project from manifest?" prompt
-        # (its default answer is already yes — this just skips the interactive wait).
-        run: yes '' | bubblewrap build --skipPwaValidation --manifest=./twa-manifest.json
+        run: bubblewrap build --skipPwaValidation --manifest=./twa-manifest.json
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

@@ -34,6 +34,17 @@ jobs:
           printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > "$HOME/.bubblewrap/config.json"
           cat "$HOME/.bubblewrap/config.json"
 
+      - name: Bridge modern Android SDK layout to what Bubblewrap expects
+        # GitHub's runner ships the SDK with only cmdline-tools/*/bin/sdkmanager.
+        # Bubblewrap looks for the older tools/bin/sdkmanager (or bin/sdkmanager)
+        # layout, so we add a compatibility symlink pointing at the real one.
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager | head -n 1)
+          echo "Found sdkmanager at: $SDKMANAGER"
+          mkdir -p "$ANDROID_HOME/tools/bin"
+          ln -sf "$SDKMANAGER" "$ANDROID_HOME/tools/bin/sdkmanager"
+          ls -la "$ANDROID_HOME/tools/bin"
+
       - name: Restore signing keystore from secret
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore
 

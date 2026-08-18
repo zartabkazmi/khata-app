@@ -35,12 +35,19 @@ jobs:
           cat "$HOME/.bubblewrap/config.json"
 
       - name: Bridge modern Android SDK layout to what Bubblewrap expects
-        # GitHub's runner ships the SDK with only cmdline-tools/*/bin/sdkmanager.
-        # Bubblewrap looks for the older tools/bin/sdkmanager (or bin/sdkmanager)
-        # layout, so we add a compatibility symlink pointing at the real one.
+        # GitHub's runner ships the SDK with only cmdline-tools/*/bin/sdkmanager
+        # (nested a few levels deep). Bubblewrap looks for the older
+        # tools/bin/sdkmanager (or bin/sdkmanager) layout, so we add a
+        # compatibility symlink pointing at the real one, searching with no
+        # depth limit so it's actually found regardless of the exact nesting.
         run: |
-          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager | head -n 1)
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)
           echo "Found sdkmanager at: $SDKMANAGER"
+          if [ -z "$SDKMANAGER" ]; then
+            echo "Could not locate sdkmanager anywhere under $ANDROID_HOME/cmdline-tools"
+            find "$ANDROID_HOME" -maxdepth 3
+            exit 1
+          fi
           mkdir -p "$ANDROID_HOME/tools/bin"
           ln -sf "$SDKMANAGER" "$ANDROID_HOME/tools/bin/sdkmanager"
           ls -la "$ANDROID_HOME/tools/bin"
